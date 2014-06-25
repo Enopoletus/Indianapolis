@@ -44,7 +44,9 @@ for x in Dicts:
 for x in Tree:
 	for z in Indexes[x[-4:]]:
 		if FindRoot(x) not in Clusters:
-			Clusters[FindRoot(x)] = {}
+			Clusters[FindRoot(x)] = {'2000 Tracts': [], '2012 Tracts': []}
+		if x[-4:] != '2009' and x[:-5] not in Clusters[FindRoot(x)][x[-4:]+' Tracts']:
+			Clusters[FindRoot(x)][x[-4:]+' Tracts'].append(x[:-5])
 		if z+'-'+x[-4:] not in Clusters[FindRoot(x)]:
 			Clusters[FindRoot(x)][z+'-'+x[-4:]] = 0.0
 		Clusters[FindRoot(x)][z+'-'+x[-4:]] = Clusters[FindRoot(x)][z+'-'+x[-4:]]+Dicts[x][z]
@@ -52,6 +54,12 @@ for x in Indy['features']:
 	try:
 		for z in Clusters[FindRoot(x['properties']['GEOID10']+'-2012')]:
 			x['properties'][z] = Clusters[FindRoot(x['properties']['GEOID10']+'-2012')][z]
+		if len(Clusters[FindRoot(x['properties']['GEOID10']+'-2012')]['2012 Tracts']) > 1:
+			x['properties']['GEOID10-Cluster'] = Clusters[FindRoot(x['properties']['GEOID10']+'-2012')]['2012 Tracts'][0][5:]
+			for y in Clusters[FindRoot(x['properties']['GEOID10']+'-2012')]['2012 Tracts'][1:]:
+				x['properties']['GEOID10-Cluster'] = x['properties']['GEOID10-Cluster']+','+y[5:]
+		else:
+			x['properties']['GEOID10-Cluster'] = x['properties']['GEOID10'][5:]
 	except:
 		print x['properties']['GEOID10']
 		for y in Indexes:

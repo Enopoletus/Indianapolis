@@ -74,7 +74,7 @@ margin-right:auto;}
 <p>(Sen mentions other cities--Pittsburgh, Cleveland, Columbus--and I haven't finished mapping those yet, so the conclusions here might or might not apply to them.)</p>
 <h2>Mapping population change in Indianapolis.</h2>
 <p>Here is a map of Census tracts in Indianapolis (coterminous with Marion County, IN) colored by percentage change in total population from 2000 to 2012 (using Census data and American Community Survey 5-year estimates, respectively).  I used my usual "combine tracts into clusters" approach, and as usual, red means increase and blue means decrease.</p>
-<p>You can click any tract to see a little psuedo-scatterplot of the 2000, 2009, and 2012 population estimates, with the latter two being ACS 5-year estimates.  Boundaries and tract names are for the 2010 tracts, although the numbers for a few 2010 tracts are aggregated together because they were split from a single 2000 tract.  (So when all the numbers are the same for a tract and its neighbor, then that's referring to a single unit.)</p>
+<p>You can click any tract to see a little psuedo-scatterplot of the 2000, 2009, and 2012 population estimates, with the latter two being ACS 5-year estimates.  The labels specify when 2010 tracts are aggregated together, although right now there are still individual 2010 boundaries on the map even for the aggregated tracts.</p>
 </div>
 <div class="mapcontainer">
 <div class="maptitle">
@@ -118,6 +118,7 @@ margin-right:auto;}
 <p>It's surely not a coincidence that the area's city council district elected its first Democrat, Jos&eacute Evans (who is African-American), <a href="http://www.indy.gov/eGov/Council/Councillors/Biography/Pages/district_1.aspx">"in history"</a>.</p>
 <p>Similarly, the African-American population dropped in some of those same central and north-of-central Indianapolis neighborhoods, but there were huge percentage and/or absolute increases in most outlying areas.</p>
 <p>Just one example: The African-American population of Tract 3614 increased by more than a factor of 10, rising from 195 in 2000 to 1,983 in 2012.</p>
+<p>You can also look at the shift in Indianapolis' Hispanic population, which again was particularly strong in the periphery, either in absolute terms or in percentage terms.</p>
 <h2>Conclusion/A possible explanation?</h2>
 <p>To speculate a bit about a possible explanation for Sen's apparent misconception: Sen took a trip to Indianapolis, and wrote that most of the neighborhoods he visited were in the few "walkable/downtown parts of the city".  But population doesn't measure where people visit--it measures where people live.</p>
 <p>The outskirts of Marion County might not have much to interest a tourist, unless you want to visit Dick Lugar's family farm.  But what they have is a lot of room for growth--recently rural space (like the Lugar family farm, which some people were surprised really was in Indianapolis proper) where new developments can be built.</p> 
@@ -126,11 +127,12 @@ margin-right:auto;}
 <p>Again, these kinds of neighborhoods (which are technically part of the city of Indianpolis despite being townships) probably won't be tourism or nightlife hotspots.  But they are residential hotspots, and seem to be where Indianapolis is most notably gaining residential population.</p>
 <h2>Data sources and notes.</h2>
 <p>As I said, I used numbers from the 2000 Census, from the 2005-2009 American Community Survey estimates, and from the 2008-2012 American Community Survey estimates.</p>
-<p>All of the data sources, and the script that grouped things into clusters and generated the GeoJSON and so on, can be found <a href="HERE">here</a>.</p>
+<p>All of the data sources, and the script that grouped things into clusters and generated the GeoJSON and so on, can be found <a href="https://github.com/Xenocrypt/Indianapolis">here</a>.</p>
 <p>As is my usual approach, I took the 2000-2012 Census tract relationship files, threw out polygons with no 2010 population, and then used a "union-find" algorithm to group tracts into comparable "clusters".</p>
 <p>A quick note: For the 2000 Census data, I used "VD05,Not Hispanic or Latino: - Population of one race: - White alone" and "VD06,Not Hispanic or Latino: - Population of one race: - Black or African American alone".</p>
 <p>For the 2009 and 2012 ACS data, I used "HC01_EST_VC76,Number; Estimate; HISPANIC OR LATINO AND RACE - Total population - Not Hispanic or Latino - White alone" and "HC01_EST_VC77,Number; Estimate; HISPANIC OR LATINO AND RACE - Total population - Not Hispanic or Latino - Black or African American alone".  I think those are directly comparable, anyway.</p>
-<script src="http://d3js.org/d3.v3.js"></script>
+</div>
+<script src="d3.v3.js"></script>
 <script src="//ajax.googleapis.com/ajax/libs/webfont/1.4.7/webfont.js"></script>
 <script>
   WebFont.load({
@@ -139,7 +141,7 @@ margin-right:auto;}
     }
   });
 </script>
-<script src="IndyEdited2.js"></script>
+<script src="IndyEdited5.js"></script>
 <script>
 Year = '2000';
 function BoxDrawer(ID, Year, Z){
@@ -149,14 +151,14 @@ var width2 = d3.select(this).node().getBBox().width;
 var height2= d3.select(this).node().getBBox().height;
 var x = d3.select(this).node().getBBox().x;
 var y = d3.select(this).node().getBBox().y;
-var Box = d3.select("div.Two").append("div").style("width","130px").style("z-index", Z).style("height", "200px").style("border-color", color3(ratio2(d.properties, ID, Year))).style("border-width", "3px").style("border-style", "solid").style("background-color", "white").style("z-index", 5).style("position", "absolute").style("left", (+x)+(+(width2)/2)+"px").style("top", (+y)+(+(height2)/2)+"px").attr("class", "box");
+var Box = d3.select("div.Two").append("div").style("width","150px").style("z-index", Z).style("height", "200px").style("border-color", color3(ratio2(d.properties, ID, Year))).style("border-width", "3px").style("border-style", "solid").style("background-color", "white").style("z-index", 5).style("position", "absolute").style("left", (+x)+(+(width2)/2)+"px").style("top", (+y)+(+(height2)/2)+"px").attr("class", "box");
 for(i=0; i<3; i++){
 Box.append("div").style({"border-radius": "18px", "-webkit-border-radius": "18px",
 "-moz-border-radius": "18px", "border-width": "1.5px"}).style("width", "36px").style("height", "36px").style("border-color", "black").style("border-style", "solid").style("position", "absolute").style("background-color", color3(ratio2(d.properties, ID, Year))).style("left", X[i]+"px").style("top", PopCircles(+d.properties[ID+'-'+Stat[i]])+"px");
 Box.append("text").style("position", "absolute").style("left", (+3.5)+(+X[i])+"px").style("top", (+7.5)+(+PopCircles(+d.properties[ID+'-'+Stat[i]]))+"px").text(d.properties[ID+'-'+Stat[i]]).style("font-size", "10px").style("color", function(){if(ratio2(d.properties, ID, Year) > 1.6){return "white"}else{return "black"}});;
 Box.append("text").text(Stat[i]).style("font-size", "12px").style("position", "absolute").style("top", "180px").style("left", (+2.5)+(+X[i])+"px");};
 
-Box.append("text").text('2010 Tract '+d.properties.GEOID10.substr(5,13)+', Cluster Numbers').style("font-size", "12px").style("position", "absolute").style("top", "10px").style("left", "5px");
+Box.append("div").text('Cluster of 2010 Tract(s) '+d.properties['GEOID10-Cluster']+':').style("font-size", "12px").style("position", "absolute").style("top", "10px").style("left", "5px");
 })};
 
 var PopCircles = d3.scale.linear().domain([20000, 0]).range([30, 130]);
@@ -169,7 +171,7 @@ return (+d[ID+'-2012']-(+d[ID+'-'+Year]))/(+d[ID+'-'+Year]);}
 var X = [10, 50, 90];
 var Stat = ['2000', '2009', '2012'];
 ID = 'Pop';
-var projection = d3.geo.mercator().center([-86, 39.8]).scale(82000).translate([600, 300]);
+var projection = d3.geo.mercator().center([-86, 39.8]).scale(94000).translate([600, 300]);
 var path = d3.geo.path().projection(projection);
 var color2 = d3.scale.threshold()
     .domain([0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6, 0.65, 0.7])
